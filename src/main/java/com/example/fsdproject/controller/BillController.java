@@ -5,10 +5,13 @@ import com.example.fsdproject.entity.Customer;
 import com.example.fsdproject.service.BillService;
 import com.example.fsdproject.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -40,25 +43,34 @@ public class BillController {
 
 
     @PostMapping("/addbill")
-    public String addCustomer(@RequestBody TempBill tbill) {
+    public ResponseEntity<?> addCustomer(@RequestBody TempBill tbill) {
 
         System.out.println("Req got with "+tbill.getUserId());
 
         Customer c=customerService.findById(tbill.getUserId());
 
-        Bill bill=new Bill();
-        bill.setCustomer(c);
-        bill.setStatus(false);
-        bill.setAmount(tbill.getBillingAmount());
+        if(c!=null){
+            System.out.println("inside if");
+            Bill bill=new Bill();
+            bill.setCustomer(c);
+            bill.setStatus(false);
+            bill.setAmount(tbill.getBillingAmount());
 
 
+            billService.addBill(bill);
 
-        billService.addBill(bill);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Bill added successfully");
+            response.put("customer", c);
+            return ResponseEntity.ok(response);
+        }
+        else{
+            System.out.println("inside else");
 
+            String errorMessage = "Customer is Not Found";
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
 
-        String str = "Bill added succesfully";
-
-        return str;
     }
 
     static class TempBill

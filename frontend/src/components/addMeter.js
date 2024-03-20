@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/addmeter.css';
 
 function AddMeter() {
   const [userId, setUserId] = useState();
   const [billingAmount, setBillingAmount] = useState();
   const [registrationStatus, setRegistrationStatus] = useState('');
+  const [customer,setCustomer] =useState(null);
 
 
   const handleSubmit = async (event) => {
@@ -27,12 +29,22 @@ function AddMeter() {
         body: JSON.stringify(formData)
       });
 
+
+
       if (response.ok) {
-        window.alert("Added Successfully");
+        const responseData = await response.json();
+        const { customer } = responseData;
+        console.log(customer);
+        setCustomer(customer);
+        window.alert("Bill Added Successfully");
         setRegistrationStatus('Registration successful!');
       } else {
-        setRegistrationStatus('Registration failed. Please try again.');
+        const errorMessage = await response.text(); // Extract error message from response
+        console.error("Error:", errorMessage);
+        setRegistrationStatus("Registration failed. Please try again.");
+        window.alert(errorMessage); // Display error message
       }
+
     } catch (error) {
       console.error('Error registering user:', error);
       setRegistrationStatus('An error occurred while registering. Please try again later.');
@@ -62,7 +74,23 @@ function AddMeter() {
             />
           </div>
           <button type="submit">Submit</button>
+
         </form>
+
+        {customer && (
+            <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '20px' }}>
+              <h3 style={{ marginBottom: '10px' }}>Customer Details</h3>
+
+              <p><strong>City:</strong> {customer.city}</p>
+              <p><strong>Email:</strong> {customer.email}</p>
+              <p><strong>First Name:</strong> {customer.firstName}</p>
+              <p><strong>Last Name:</strong> {customer.lastName}</p>
+              <p><strong>Address:</strong> {customer.address}</p>
+              <p><strong>Phone Number:</strong> {customer.phoneNumber}</p>
+            </div>
+        )}
+
+
       </div>
   );
 }
