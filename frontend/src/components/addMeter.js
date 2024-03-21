@@ -77,18 +77,7 @@ function AddMeter() {
 
         </form>
 
-        {customer && (
-            <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '20px' }}>
-              <h3 style={{ marginBottom: '10px' }}>Customer Details</h3>
 
-              <p><strong>City:</strong> {customer.city}</p>
-              <p><strong>Email:</strong> {customer.email}</p>
-              <p><strong>First Name:</strong> {customer.firstName}</p>
-              <p><strong>Last Name:</strong> {customer.lastName}</p>
-              <p><strong>Address:</strong> {customer.address}</p>
-              <p><strong>Phone Number:</strong> {customer.phoneNumber}</p>
-            </div>
-        )}
 
 
       </div>
